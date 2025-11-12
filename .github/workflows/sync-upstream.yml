@@ -1,0 +1,29 @@
+name: Sync Fork
+
+on:
+  schedule:
+    # 每月1号 00:00 UTC 运行 (北京时间每月1号 08:00)
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  sync:
+    name: Sync Upstream
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+        
+      - name: Sync upstream changes
+        uses: upstream-actions/sync-fork@v1
+        with:
+          # 上游仓库地址，格式：owner/repo
+          upstream_repo: xiaolin-007/clash-verge-script
+          # 目标分支，默认为所有分支
+          target_branch: main
+          # 同步方式，rebase 或 merge
+          sync_method: rebase
+        env:
+          # 需要设置 personal access token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
